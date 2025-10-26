@@ -65,9 +65,9 @@
                     <h5><u>So möchte ich meine Kleidung spenden:</u></h5>
 
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault" value="abgabe" v-model="selectedOption" @change="plzNeu">
-                        <label class="form-check-label" for="abgabe">
-                            Abgabe an der Geschäftsstelle
+                        <input class="form-check-input" type="radio" name="radioDefault" value="übergabe" v-model="selectedOption" @change="plzNeu">
+                        <label class="form-check-label" for="übergabe">
+                            Übergabe an der Geschäftsstelle
                         </label>
                         </div>
                     <div class="form-check">
@@ -86,9 +86,9 @@
                     </div>
 
                     <div>
-                        <!-- falls Abgabe bei der Geschäftsstelle -->
+                        <!-- falls Übergabe bei der Geschäftsstelle -->
 
-                        <p v-if="selectedOption === 'abgabe'" class="my-3 p-2 alert alert-info">
+                        <p v-if="selectedOption === 'übergabe'" class="my-3 p-2 alert alert-info">
                             <strong>Bitte stellen Sie sicher, dass Sie sich bereits an unserer Geschäftsstelle vor Ort befinden, um die Kleiderspende unmittelbar durchzuführen.</strong>
                         </p>
 
@@ -200,8 +200,8 @@
                 <h5 v-else class="card-header p-3">Folgende Daten wurden registriert:</h5>
                 <div class="card-body">
                     <p class="card-title"><u>Die Kleiderspende soll folgendermaßen erfolgen:</u></p>
-                    <p v-if="selectedOption === 'abgabe'" class="card-text p-2">
-                        <strong>Abgabe an der Geschäftsstelle</strong>
+                    <p v-if="selectedOption === 'übergabe'" class="card-text p-2">
+                        <strong>Übergabe an der Geschäftsstelle</strong>
                     </p>
                     <p v-if="selectedOption === 'abholung'" class="card-text p-2">
                         <strong>Abholung an folgender Adresse:</strong> <br> {{ strasse}} {{ nummer }} <br> {{ plz }} {{ ort }}
@@ -332,7 +332,7 @@
                 },
             methods: {
                 plzNeu() {
-                    if (this.selectedOption === "abgabe") {
+                    if (this.selectedOption === "übergabe") {
                         this.plz = "";
                     }
                 },
@@ -341,7 +341,7 @@
                         this.nachricht = "! Bitte geben Sie mindestens ein Kleidungsstück als Spende sowie eine gültige Postleitzahl ein !"
                     }
                     else if (this.selectedOption === "abholung" && !this.plz.startsWith("33")) {
-                        this.nachricht = "! Bitte geben Sie eine gültige Postleitzahl ein oder wählen Sie die Abgabe an der Geschäftsstelle !"
+                        this.nachricht = "! Bitte geben Sie eine gültige Postleitzahl ein oder wählen Sie die Übergabe an der Geschäftsstelle !"
                     }
                     else if (this.gesamt===0) {
                         this.nachricht = "! Bitte geben Sie mindestens ein Kleidungsstück als Spende ein !"
@@ -366,7 +366,7 @@
                 stand() {
                     let fortschritt = 10
 
-                    if (this.selectedOption === "abgabe") {
+                    if (this.selectedOption === "übergabe") {
                         fortschritt += 20
                     }
                     if (this.selectedOption === "abholung") {
