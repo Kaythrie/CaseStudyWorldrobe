@@ -11,15 +11,18 @@
 <body>
 
     <header class="text-light text-center py-3 heading-container" style="background-color: #5d0e6b;">
-        <div class="d-flex justify-content-center">
-            <div class="px-1"><img src="Logo ChatGPT Image 22. Aug. 2025, 13_15_52 .png" alt="" style="width: 7rem; height: 6rem;"></div>
-            <div class="px-3"><h1 class="display-1 text-center"><strong><strong>Worldrobe</strong></strong></h1></div>
+        <div class="container-fluid d-flex flex-column flex-md-row align-items-md-center flex-wrap justify-content-center">
+            <div class="px-1"><img src="Logo ChatGPT Image 22. Aug. 2025, 13_15_52 .png" alt="Logo" style="width: 7rem; height: 6rem;"></div>
+            <div class="px-3"><h1 class="display-1"><strong><strong>Worldrobe</strong></strong></h1></div>
         </div>
-        <h2 class="display-6">- der Kleiderschrank für die Welt -</h2>
+        <h2 class="display-6 text-center">- der Kleiderschrank für die Welt -</h2>
     </header>
 
     <nav class="navbar navbar-expand-lg" style="background-color: #cf7fe3;" data-bs-theme="light">
-      <div class="container-fluid">    
+      <div class="container-fluid">  
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>  
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
@@ -43,62 +46,83 @@
         
         <div class="container-fluid" id="app">
 
-            <div class="row m-2"></div>
-            <div class="row m-3">
-                <h3 class="p-2"><u>Registrierungsformular</u></h3>
+            <div class="progress m-3 sticky-top">
+                    <div class="progress-bar" role="progressbar" :aria-valuenow="stand" aria-valuemin="0" 
+                        aria-valuemax="100" :style="{width: stand + '%'}">
+                    </div>
             </div>
 
-            <form action="" method="get" class="register">
+            <form v-if="isVisible" action="" method="get" class="register" @submit.prevent="spenden">
+
+                <div class="row m-2"></div>
+                <div class="row m-3">
+                    <h3 class="p-2"><u>Registrierungsformular</u></h3>
+                </div>
                 
                 <!-- Ort der Kleiderspende -->
+
                 <div class="row m-3">
                     <h5><u>So möchte ich meine Kleidung spenden:</u></h5>
-                    <!-- #TODO : Hinweis hinzufügen für Auswählen wie Spende angenommen wird-->
+
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="radioDefault" value="abgabe" v-model="selectedOption">
+                        <input class="form-check-input" type="radio" name="radioDefault" value="abgabe" v-model="selectedOption" @change="plzNeu">
                         <label class="form-check-label" for="abgabe">
                             Abgabe an der Geschäftsstelle
                         </label>
                         </div>
-                        <div class="form-check">
+                    <div class="form-check">
                         <input class="form-check-input" type="radio" name="radioDefault" value="abholung" v-model="selectedOption">
                         <label class="form-check-label" for="abholung">
                             Abholung
                         </label>
                     </div>
 
+                    <!--Solange keine Option ausgewählt ist-->
+
+                    <div>
+                        <p v-if="selectedOption === null" class="my-3 p-2 alert alert-warning">
+                            Bitte wählen Sie eine Option aus, wie die Kleiderspende nach <strong>Worldrobe</strong> gelangen soll!
+                        </p>
+                    </div>
+
                     <div>
                         <!-- falls Abgabe bei der Geschäftsstelle -->
 
-                        <p v-if="selectedOption === 'abgabe'" class="m-3 p-2" style="background-color: #f0c1f0;">
+                        <p v-if="selectedOption === 'abgabe'" class="my-3 p-2 alert alert-info">
                             <strong>Bitte stellen Sie sicher, dass Sie sich bereits an unserer Geschäftsstelle vor Ort befinden, um die Kleiderspende unmittelbar durchzuführen.</strong>
                         </p>
 
                         <!-- falls Abholung -->
-                        <p v-if="selectedOption === 'abholung'" class="m-3 p-2" style="background-color: #f0c1f0;">
-                            <strong>Bitte geben Sie die Adresse ein, an der die Kleiderspende abgeholt werden soll:</strong>
 
-                            <p v-if="selectedOption === 'abholung'" class="input-group mb-3 m-3">
-                                <span class="input-group-text col-4 col-lg-2">Straße, Hausnr.:</span>
-                                <input type="text" class="form-control" placeholder="Straße" aria-label="strasse" id="strasse" required>
-                                <input type="number" class="form-control" placeholder="Nr." aria-label="nummer" max="999" id="nummer" required>
-                            </p>
-                            <p v-if="selectedOption === 'abholung'" class="input-group mb-3 m-3">
-                                <span class="input-group-text col-4 col-lg-2">PLZ, Ort:</span>
-                                <input type="text" class="form-control" placeholder="PLZ (5Zahlen)" aria-label="plz" id="plz" v-model="plz" minlength="5" maxlength="5" required>
-                                <input type="text" class="form-control" placeholder="Ort" aria-label="ort" id="ort" required>
-                            </p>
-                        </p>
+                        <div v-if="selectedOption === 'abholung'" class="my-3 px-4 py-3 bg-secondary-subtle text-secondary-emphasis">
+                            <p><strong>Bitte geben Sie die Adresse ein, an der die Kleiderspende abgeholt werden soll:</strong></p>
+                            <div class="d-flex flex-column flex-sm-row m-3">
+                                <label for="adresse1" class="form-label col-sm-2">Straße, Hausnr.:</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" placeholder="Straße" aria-label="strasse" v-model="strasse" required>
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="number" class="form-control" placeholder="Nr." aria-label="nummer" max="999" v-model="nummer" required>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column flex-sm-row m-3">
+                                <label for="adresse1" class="form-label col-sm-2">PLZ, Ort:</label>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" placeholder="PLZ (5 Ziffern)" aria-label="plz" id="plz" v-model="plz" minlength="5" maxlength="5" required>
+                                </div>
+                                <div class="col-sm-5">
+                                    <input type="text" class="form-control" placeholder="Ort" aria-label="ort" v-model="ort" required>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Auswertung der PLZ-Prüfung -->
-                        <p v-if="reachablePLZ" class="m-3 p-2 text-bg-success">
+                        <p v-if="reachablePLZ" class="m-3 p-2 alert alert-success">
                             Perfekt, die eingegebene Adresse liegt in unserer Reichweite und kann von unserem Abholservice erreicht werden!
                         </p>
-                        <!-- #TODO : Realistischer, indem im Fehler angegeben, bei welcher PLZ überhaupt abgeholt wird (z.b. 33XXX)-->
-                        <!-- #TODO : Fehler wird auch angezeigt wenn PLZ gefüllt mit nicht abholbar und dann auf Abgabe gewechselt
-                                     Ausserdem auch positive meldung-->
-                        <p v-else-if="plz.length >= 2" class="m-3 p-2 text-bg-danger">
-                            Diese Adresse kann von unserem Abholservice leider nicht erreicht werden. <br> Wir bitten um Verständnis, dass Kleiderspenden lediglich in einem bestimmten Radius um den Sitz unserer Geschäftsstelle herum berücksichtigt werden können. 
+
+                        <p v-else-if="plz.length >= 2" class="m-3 p-2 alert alert-danger">
+                            <strong>Die Postleitzahl muss mit "33XXX" beginnen! </strong><br> Die eingegebene Adresse kann leider nicht von unserem Abholservice erreicht werden. <br> Wir bitten um Verständnis, dass Kleiderspenden lediglich in einem bestimmten Radius um den Sitz unserer Geschäftsstelle herum berücksichtigt werden können. 
                         </p>
 
                     </div>  
@@ -106,144 +130,115 @@
 
                 <!-- Auswahl Krisengebiet -->
                 
-                <!-- #TODO : Einrücken, dass nicht in zweite Zeile. (Irgendwas mit dem col medium/large auf small/medium oder so) -->
                 <div class="row m-3">
-                    <div class="col-md-6 col-lg-4">
-                        <label for="krisengebiet" class="form-label"><h5><u>In dieses Krisengebiet soll meine Spende gehen:</u></h5></label>
+                    <label for="krisengebiet" class="form-label"><h5><u>In dieses Krisengebiet soll meine Spende gehen:</u></h5></label>
 
-                        <select class="form-select" required>
-                            <!-- #TODO : Erste Option sollte nicht auswählbar sein und "Wähle eine Option"-->
-                            <option v-for="gebiet in Krisengebiete" :key="Krisengebiete" :value="Krisengebiete">
+                    <div class="dropdown col-md-6 col-lg-4">
+                        <select class="form-select" v-model="selectedGebiet" required>
+                            <option selected disabled value="">- Bitte wähle eine Option -</option>
+                            <option v-for="gebiet in Krisengebiete" :key="Krisengebiete" :value="gebiet">
                                 {{ gebiet }}
                             </option>
                         </select>
                     </div>
+
                 </div>
 
                 <!-- Auswahl zu spendender Kleidungsstücke -->
         
                 <div class="row m-3">
-                    <table class="table table-striped caption-top m-3">
+                    <div class="col">
+                        <table class="table table-striped caption-top mt-3">
 
-                        <caption style="color: black;">
-                            <h5><u>Diese Kleidung möchte ich spenden:</u></h5> 
-                        </caption>
+                            <caption style="color: black;">
+                                <h5><u>Diese Kleidung möchte ich spenden:</u></h5> 
+                            </caption>
 
-                        <thead>
-                            <tr>
-                            <th scope="col">Kleidungsstück</th>
-                            <th scope="col">Anzahl zu spendender Kleidungsstücke</th>
-                            </tr>
-                        </thead>
+                            <thead>
+                                <tr>
+                                <th scope="col">Kleidungsstück</th>
+                                <th scope="col">Anzahl zu spendender Kleidungsstücke</th>
+                                </tr>
+                            </thead>
 
-                        <tbody class="table-group-divider">
+                            <tbody class="table-group-divider">
 
-                            <tr>
-                                <th><strong><em>Oberteile</em></strong></th>
-                                <td></td>
-                            </tr>
+                                <tr v-for="(teil, index) in Kleidungsstücke" :key="index" :value="teil">
+                                    <td><Strong>{{ teil.item }}</Strong>{{teil.beispiel}}</td>
+                                    <td>
+                                    <input type="number" v-model.number="teil.anzahl" min="0" max="50" class="form-control text-end">
+                                    </td>
+                                </tr>
 
-                            <!-- #TODO : ausschließlich oberbegriffe abfragen. (S. Unten) -->
+                            </tbody>
 
-                            <tr v-for="(teil, index) in Oberteile" :key="index">
-                                <td>{{ teil.item }}</td>
-                                <td>
-                                <input type="number" v-model.number="teil.anzahl" min="0" max="20" class="form-control">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th><strong><em>Hosen etc.</em></strong></th>
-                                <td></td>
-                            </tr>
-
-                            <tr v-for="(teil, index) in Hosen" :key="index">
-                                <td>{{ teil.item }}</td>
-                                <td>
-                                <input type="number" v-model.number="teil.anzahl" min="0" max="20" class="form-control">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th><strong><em>Oberbekleidung</em></strong></th>
-                                <td></td>
-                            </tr>
-
-                            <tr v-for="(teil, index) in Oberbekleidung" :key="index">
-                                <td>{{ teil.item }}</td>
-                                <td>
-                                <input type="number" v-model.number="teil.anzahl" min="0" max="20" class="form-control">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th><strong><em>Jacken etc.</em></strong></th>
-                                <td></td>
-                            </tr>
-
-                            <tr v-for="(teil, index) in Jacken" :key="index">
-                                <td>{{ teil.item }}</td>
-                                <td>
-                                <input type="number" v-model.number="teil.anzahl" min="0" max="20" class="form-control">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th><strong><em>Schuhe etc.</em></strong></td>
-                            </tr>
-
-                            <tr v-for="(teil, index) in Schuhe" :key="index">
-                                <td>{{ teil.item }}</td>
-                                <td>
-                                <input type="number" v-model.number="teil.anzahl" min="0" max="20" class="form-control">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th><strong><em>Kopfbedeckung</em></strong></th>
-                                <td></td>
-                            </tr>
-
-                            <tr v-for="(teil, index) in Kopfbedeckung" :key="index">
-                                <td>{{ teil.item }}</td>
-                                <td>
-                                <input type="number" v-model.number="teil.anzahl" min="0" max="20" class="form-control">
-                                </td>
-                            </tr>
-
-                            <tr>
-                                <th><strong><em>Sonstiges</em></strong></th>
-                                <td></td>
-                            </tr>
-
-                            <tr v-for="(teil, index) in Sonstiges" :key="index">
-                                <td>{{ teil.item }}</td>
-                                <td>
-                                <input type="number" v-model.number="teil.anzahl" min="0" max="20" class="form-control">
-                                </td>
-                            </tr>
-
-                        </tbody>
-
-                        <tfoot class="table-group-divider">
-                            <tr>
-                                <!-- #TODO : GesamtzAHL -->
-                                <th><strong>Gesamtanzahl:</strong></th>
-                                <td><output type="number" id="summe"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
+                            <tfoot class="table-group-divider">
+                                <tr>
+                                    <th><strong>Gesamtanzahl:</strong></th>
+                                    <td class="text-end"><strong>{{gesamtAnzahl}}</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
                 </div>
-            
 
+                <div class="row m-3">
+                    <p v-if="nachricht" class="my-3 p-2 alert alert-warning text-center">
+                        <strong>{{ nachricht }}</strong>
+                    </p>
+                </div>
 
-                <div class="row m-3 p-2 btn btn-primary">
-                    <!-- #TODO : submit button -->
-                     <!-- #TODO : nach absenden auf eine Bestätigungsseite, wo man alles nochmal checken soll oder abbrechen kann. anschließend nach weiterer bestätigung auf eine Danksagungsseite (neue html) -->
-                    <button type="submit" class="btn btn-primary">absenden</button>
+                <div class="row mx-5">
+                    <button type="submit" class="btn btn-primary" :disabled="selectedOption === null">KLEIDUNG SPENDEN</button>
+                    <p></p>
                 </div>
 
             </form>
+
+            <div v-else class="row m-3 card text-bg-light">
+                <h5 v-if="check === false" class="card-header p-3">Bitte überprüfen Sie, ob die Eingaben korrekt sind:</h5>
+                <h5 v-else class="card-header p-3">Folgende Daten wurden registriert:</h5>
+                <div class="card-body">
+                    <p class="card-title"><u>Die Kleiderspende soll folgendermaßen erfolgen:</u></p>
+                    <p v-if="selectedOption === 'abgabe'" class="card-text p-2">
+                        <strong>Abgabe an der Geschäftsstelle</strong>
+                    </p>
+                    <p v-if="selectedOption === 'abholung'" class="card-text p-2">
+                        <strong>Abholung an folgender Adresse:</strong> <br> {{ strasse}} {{ nummer }} <br> {{ plz }} {{ ort }}
+                    </p>
+
+                    <p class="card-title"><u>Die Kleiderspende soll in folgendes Krisengebiet gehen:</u></p>
+                    <p class= "card-text p-2"><strong>{{selectedGebiet}}</strong></p>
+
+                    <p class="card-title"><u>Folgende Kleidungsstücke sind in der Spende enthalten:</u></p>
+                    <ul class="card-text p-2">
+                        <li v-for="(teil, index) in zuspendendeKleidung" :key="index2">
+                            {{ teil.anzahl }} × <strong>{{ teil.item }}</strong> {{ teil.beispiel }}
+                        </li>
+                    </ul>
+                    <p><strong>Gesamtanzahl: </strong>{{gesamtAnzahl}}</p>
+
+                    <div v-if="check === false" class="d-flex justify-content-between mt-3">
+                        <button @click="isVisible = !isVisible" type="button" class="btn btn-secondary m-3">ZURÜCK</button>
+                        <button @click="check = !check" type="button" class="btn btn-secondary m-3">BESTÄTIGEN</button>
+                    </div>
+
+                    <div v-else style="background-color: #cf7fe3; color: #5d0e6b;">
+                        <div class="container-fluid d-flex flex-column flex-md-row align-items-md-center flex-wrap">   
+                            <div class="m-2 p-3"><img src="Logo ChatGPT Image 22. Aug. 2025, 13_15_52 .png" alt="" style="width: 7rem; height: 6rem;"></div>
+                            <div class="m-2 p-3">
+                                <h5><strong>Herzlichen Glückwunsch!</strong></h5>
+                                <p>Die Kleiderspende wurde erfolgreich registriert. Vielen Dank für Ihre Unterstützung! Auf ein baldiges Wiedersehen.</p>
+                                <p v-if="selectedOption === 'abholung'"><em>Spende registriert am: {{zeitpunkt}} in {{ort}}</em></p>
+                                <p v-else><em>Spende registriert am: {{zeitpunkt}} an der Geschäftsstelle</em></p>
+                            </div>
+                            <div class="ms-auto">
+                                <a href="home.html" type="submit" class="btn btn-primary m-3 p-3">Zurück zur Startseite</a>
+                            </div>            
+                        </div> 
+                    </div>
+                </div>
+            </div>
         </div>
 
         
@@ -264,9 +259,12 @@
         let app = Vue.createApp({
             data() {
                 return {
-                    Sache: "TESTTEST123",
+                    isVisible: true,
                     selectedOption: null,
+                    strasse: "",
+                    nummer: "",
                     plz: "",
+                    ort: "",
                     selectedGebiet:"",
                     Krisengebiete: [
                         "Afghanistan",
@@ -316,55 +314,80 @@
                         "Zentralafrikanische Republik",
                         "egal"
                     ],
-                    // #TODO : Oberteile in 'kleidungsstücke' und Unterelemente sind dann die vorherigen Oberbegriffe. Jeweils auch oben anpassen und alle vorherigen Unterelemente rausnehmen.
-                    Oberteile: [
-                        {item: "Top", anzahl: 0},
-                        {item: "T-Shirt", anzahl: 0},
-                        {item: "Bluse", anzahl: 0},
-                        {item: "Hemd", anzahl: 0},
-                        {item: "Pullover", anzahl: 0}
+                    Kleidungsstücke: [
+                        {item: "Oberteile", beispiel: " (z.B. Top, T-Shirt, Pullover)", anzahl: 0},
+                        {item: "Oberbekleidung", beispiel: " (z.B. Kleid, Anzug, Jacke)", anzahl: 0},
+                        {item: "Hosen etc.", beispiel: " (auch Röcke, Shorts, Leggins)", anzahl: 0},
+                        {item: "Schuhe", beispiel: " (auch Stiefel, Sandalen etc.)", anzahl: 0},
+                        {item: "Kopfbedeckungen", beispiel: " (z.B. Mütze, Hut)", anzahl: 0},
+                        {item: "Haushaltswäsche", beispiel: " (z.B. Handtücher, Bettwäsche etc.)", anzahl: 0},
+                        {item: "Sonstiges", beispiel: " (z.B. Schal, Tasche, Accessoires)", anzahl: 0}
                     ],
-                    Hosen: [
-                        {item: "Jeans", anzahl: 0},
-                        {item: "Leggins", anzahl: 0},
-                        {item: "Shorts", anzahl: 0},
-                        {item: "Rock", anzahl: 0},
-                        {item: "andere Hose", anzahl: 0},
-                    ],
-                    Oberbekleidung: [
-                        {item: "Kleid", anzahl: 0},
-                        {item: "Anzug", anzahl: 0},
-                    ],
-                    Jacken: [
-                        {item: "Blazer", anzahl: 0},
-                        {item: "Jacke", anzahl: 0},
-                        {item: "Mantel", anzahl: 0},
-                    ],
-                    Schuhe: [
-                        {item: "Stiefel", anzahl: 0},
-                        {item: "Schuhe", anzahl: 0},
-                        {item: "Sandalen", anzahl: 0},
-                    ],
-                    Kopfbedeckung: [
-                        {item: "Mütze", anzahl: 0},
-                        {item: "Hut", anzahl: 0},
-                    ],
-                    Sonstiges: [
-                        {item: "Kravatte", anzahl: 0},
-                        {item: "Schal", anzahl: 0},
-                        {item: "Handschuhe", anzahl: 0},
-                        {item: "Gürtel", anzahl: 0},
-                        {item: "Tasche", anzahl: 0},
-                        {item: "Accessoires", anzahl: 0},
-                        {item: "Sonstiges", anzahl: 0},
-                    ]
+                    index2: "",
+                    nachricht: "",
+                    gesamt: 0,
+                    check: false,
+                    zeitpunkt: new Date().toLocaleString("de-DE"),
                     }
                 },
+            methods: {
+                plzNeu() {
+                    if (this.selectedOption === "abgabe") {
+                        this.plz = "";
+                    }
+                },
+                spenden() {
+                    if (this.gesamt===0 && this.selectedOption === "abholung" && !this.plz.startsWith("33")) {
+                        this.nachricht = "! Bitte geben Sie mindestens ein Kleidungsstück als Spende sowie eine gültige Postleitzahl ein !"
+                    }
+                    else if (this.selectedOption === "abholung" && !this.plz.startsWith("33")) {
+                        this.nachricht = "! Bitte geben Sie eine gültige Postleitzahl ein oder wählen Sie die Abgabe an der Geschäftsstelle !"
+                    }
+                    else if (this.gesamt===0) {
+                        this.nachricht = "! Bitte geben Sie mindestens ein Kleidungsstück als Spende ein !"
+                    }
+                    else {
+                    this.nachricht = ""
+                    this.isVisible = false
+                    }
+                }
+            },
 
             computed: {
                 reachablePLZ() {
-                // Prüft, ob die PLZ mit "33" anfängt, da dies die ersten zwei Ziffern der fiktiven PLZ des Unternehmenssitzes entspricht
-                return this.plz.startsWith("33");
+                    return this.plz.startsWith("33");
+                },
+                gesamtAnzahl() {
+                    return this.gesamt = this.Kleidungsstücke.reduce((sum, item) => sum + item.anzahl, 0)
+                },
+                zuspendendeKleidung() {
+                    return this.Kleidungsstücke.filter(teil => teil.anzahl > 0)
+                },
+                stand() {
+                    let fortschritt = 10
+
+                    if (this.selectedOption === "abgabe") {
+                        fortschritt += 20
+                    }
+                    if (this.selectedOption === "abholung") {
+                        fortschritt += 10
+                    }
+                    if (this.strasse && this.nummer && this.reachablePLZ && this.ort) {
+                        fortschritt += 10
+                    }
+                    if (this.selectedGebiet) {
+                        fortschritt += 20
+                    }
+                    if (this.gesamtAnzahl > 0) {
+                        fortschritt += 20
+                    }
+                    if (this.isVisible === false) {
+                        fortschritt += 20
+                    }
+                    if (this.check === true) {
+                        fortschritt += 10
+                    }
+                    return fortschritt
                 }
             }
         }); 
